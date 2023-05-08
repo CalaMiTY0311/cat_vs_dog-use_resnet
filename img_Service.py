@@ -1,14 +1,9 @@
-import cv2
 import matplotlib.pyplot as plt
-from PIL import Image
-import tensorflow as tf
-import os
-
-resnet50_pre = tf.keras.applications.resnet.ResNet50(weights='imagenet', input_shape=(224,224,3))
-#resnet50_pre.summary()
-
+import cv2
+from img_Resnet_Model import resnet50_pre
 from tensorflow.keras.applications.imagenet_utils import decode_predictions
-from img_open import images
+from img_open import img_save
+
 
 def pred_img(img):
     plt.imshow(img)
@@ -21,10 +16,4 @@ def pred_img(img):
 
     for i, instance in enumerate(decoded_pred[0]):
         print('{}위 : {} ({:.2f}%)'.format(i+1, instance[1],instance[2]*100))
-   
- 
-pred_img(images[30])
-
-
-
 
