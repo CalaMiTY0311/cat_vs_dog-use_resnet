@@ -42,7 +42,10 @@ def load_images_tonumpy():
 
     return img_array
 
+img_array = tfds_images[0]
+img =  Image.fromarray(np.uint8(img_array*255))
 
+print(img.size)
 
 
 
