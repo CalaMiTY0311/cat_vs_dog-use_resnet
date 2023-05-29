@@ -1,9 +1,25 @@
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from PIL import Image
 from dogsVcats_copy import copy_train_path
 from keras_model import image_height, batch_size, input_shape, epochs, cnn_api
 from make_callback import callbacks
 import os
+
+import tensorflow as tf
+#CPU -> GPU 셋팅
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+    try:
+        # Currently, memory growth needs to be the same across GPUs
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+    except RuntimeError as e:
+        # Memory growth must be set before GPUs have been initialized
+        print(e)
+
+        
 
 
 train_datagen = ImageDataGenerator(rescale = 1./255)
@@ -29,9 +45,11 @@ validation_generator = val_datagen.flow_from_directory(
 #     newType_model = cnn_api(input_shape)
     
 newType_model = cnn_api(input_shape)
-hist = newType_model.fit_generator(train_generator, steps_per_epoch = 20000//batch_size, epochs= epochs,
-                                  validation_data = validation_generator, validation_steps = 5000//batch_size,
-                                  callbacks = callbacks)
+
+with tf.device("/gpu:0"):
+    hist = newType_model.fit(train_generator, steps_per_epoch = 20000//batch_size, epochs= epochs,
+                            validation_data = validation_generator, validation_steps = 5000//batch_size,
+                            callbacks = callbacks)
 
 import matplotlib.pyplot as plt
 train_acc = hist.history['acc']
