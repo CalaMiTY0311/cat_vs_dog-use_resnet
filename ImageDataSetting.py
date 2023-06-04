@@ -6,20 +6,11 @@ from make_callback import callbacks
 import os
 
 import tensorflow as tf
-#CPU -> GPU 셋팅
-gpus = tf.config.experimental.list_physical_devices('GPU')
-if gpus:
-    try:
-        # Currently, memory growth needs to be the same across GPUs
-        for gpu in gpus:
-            tf.config.experimental.set_memory_growth(gpu, True)
-        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
-        print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
-    except RuntimeError as e:
-        # Memory growth must be set before GPUs have been initialized
-        print(e)
 
-        
+
+from Add_GPU import GPU_SETTING
+#CPU -> GPU 셋팅
+GPU_SETTING()
 
 
 train_datagen = ImageDataGenerator(rescale = 1./255)
@@ -37,12 +28,6 @@ validation_generator = val_datagen.flow_from_directory(
     batch_size = batch_size,
     class_mode = "binary"
     )
-
-#gpu가 두개로 병렬로 각각 다른 작업을 원하시면
-# with를 사용하시고 gpu:0 , gpu:1 이러게 모델을 지정하시면 됩니다. 
-# from tensorflow as tf
-# with tf.device('gpu:0'):
-#     newType_model = cnn_api(input_shape)
     
 newType_model = cnn_api(input_shape)
 

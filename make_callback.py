@@ -1,6 +1,6 @@
 from datetime import datetime
 import os
-import keras
+from tensorflow import keras
 
 save_dir = './my_log'
 
